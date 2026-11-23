@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="it" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regolamento Server Discord | Dev, Scripter & Vehicle Modding</title>
+    
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configurazione Tailwind personalizzata -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        discord: {
+                            blurple: '#5865F2',
+                            blurpleHover: '#4752C4',
+                            dark: '#0B0E14',
+                            card: '#131722',
+                            cardHover: '#1A202E',
+                            green: '#23A559',
+                            red: '#F23F43',
+                            yellow: '#F0B232'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 5s ease-in-out infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                        'shimmer': 'shimmer 2.5s linear infinite',
+                        'gradient-x': 'gradientX 4s ease infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-150%) skewX(-20deg)' },
+                            '100%': { transform: 'translateX(250%) skewX(-20deg)' },
+                        },
+                        gradientX: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Stili avanzati: Barra di scorrimento cyber-neon, animazioni 3D e glow -->
+    <style>
+        /* Barra di scorrimento a destra (Firefox) */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #5865F2 #07090E;
+        }
+
+        /* Barra di scorrimento a destra (Chrome, Edge, Safari, Opera) */
+        ::-webkit-scrollbar {
+            width: 11px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #07090E;
+            border-left: 1px solid rgba(88, 101, 242, 0.2);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #5865F2 0%, #00f5d4 50%, #a855f7 100%);
+            border-radius: 9999px;
+            border: 2px solid #07090E;
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #00f5d4 0%, #5865F2 50%, #ec4899 100%);
+            box-shadow: 0 0 18px rgba(88, 101, 242, 0.9);
+        }
+
+        /* Griglia cyber in movimento */
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 3rem 3rem; }
+        }
+        .cyber-grid {
+            background-image: linear-gradient(to right, rgba(88, 101, 242, 0.08) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(0, 245, 212, 0.06) 1px, transparent 1px);
+            background-size: 3rem 3rem;
+            animation: gridMove 14s linear infinite;
+        }
+
+        /* Effetto glow dinamico al passaggio del mouse sulle card */
+        .interactive-card {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+
+        .interactive-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: radial-gradient(450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(88, 101, 242, 0.22), rgba(0, 245, 212, 0.08) 40%, transparent 75%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .interactive-card:hover::before {
+            opacity: 1;
+        }
+
+        .interactive-card:hover {
+            box-shadow: 0 15px 35px -10px rgba(88, 101, 242, 0.28), 0 0 15px rgba(0, 245, 212, 0.12);
+        }
+
+        /* Scroll Reveal */
+        .reveal-item {
+            opacity: 0;
+            transform: translateY(24px) scale(0.98);
+            transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-item.is-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Effetto glitch / neon pulsante sottile sul titolo */
+        @keyframes neonPulse {
+            0%, 100% {
+                text-shadow: 0 0 12px rgba(88, 101, 242, 0.45), 0 0 28px rgba(0, 245, 212, 0.25);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(0, 245, 212, 0.7), 0 0 40px rgba(168, 85, 247, 0.45);
+            }
+        }
+        .neon-title-glow {
+            animation: neonPulse 3.5s ease-in-out infinite;
+        }
+
+        /* Bordo rotante per il banner commissioni */
+        .rotating-border-box {
+            position: relative;
+            overflow: hidden;
+        }
+        .rotating-border-box::before {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            background: conic-gradient(from 0deg, transparent 0%, #00f5d4 25%, #5865F2 50%, #a855f7 75%, transparent 100%);
+            animation: spin 6s linear infinite;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-discord-dark text-slate-200 font-sans antialiased selection:bg-discord-blurple selection:text-white overflow-x-hidden relative">
+
+    <!-- Barra di progresso lettura in cima allo schermo sincronizzata con lo scroll -->
+    <div class="fixed top-0 left-0 right-0 h-1 z-50 bg-slate-900/60 pointer-events-none">
+        <div id="scrollProgressBar" class="h-full w-0 bg-gradient-to-r from-discord-blurple via-cyan-400 to-purple-500 shadow-[0_0_12px_#00f5d4] transition-[width] duration-75"></div>
+    </div>
+
+    <!-- Canvas HTML5 per sfondo vivo con particelle cyber interattive -->
+    <canvas id="cyberCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0 opacity-75"></canvas>
+
+    <!-- Effetti di sfondo luminosi (Glow ambientale + Griglia animata) -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute -top-40 -left-40 w-[30rem] h-[30rem] bg-discord-blurple/25 rounded-full blur-[130px] animate-pulse-slow"></div>
+        <div class="absolute top-1/2 -right-40 w-[30rem] h-[30rem] bg-purple-600/20 rounded-full blur-[140px] animate-pulse-slow"></div>
+        <div class="absolute -bottom-40 left-1/3 w-[30rem] h-[30rem] bg-cyan-500/15 rounded-full blur-[130px] animate-float"></div>
+        <div class="absolute inset-0 cyber-grid"></div>
+    </div>
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-discord-dark/80 border-b border-slate-800/80">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo / Brand (Cliccabile verso Discord con onde concentriche) -->
+            <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 group" title="Entra nel server Discord">
+                <div class="relative w-10 h-10 flex items-center justify-center">
+                    <span class="absolute inset-0 rounded-xl bg-discord-blurple/50 animate-ping opacity-40"></span>
+                    <div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-discord-blurple via-indigo-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-discord-blurple/40 group-hover:scale-110 transition-transform animate-float">
+                        <svg class="w-6 h-6 text-white fill-current" viewBox="0 0 127.14 96.36" aria-hidden="true">
+                            <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-bold text-white tracking-tight text-lg block leading-none group-hover:text-cyan-300 transition-colors">DEV & MODS</span>
+                    <span class="font-mono text-[11px] text-discord-blurple tracking-wider uppercase">Community Hub</span>
+                </div>
+            </a>
+
+            <!-- Link Rapidi Desktop -->
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
+                <a href="#competenze" class="hover:text-cyan-400 transition-colors">Servizi & Creazioni</a>
+                <a href="#regolamento" class="hover:text-cyan-400 transition-colors">Regolamento</a>
+                <a href="#verifica" class="hover:text-cyan-400 transition-colors">Accesso Server</a>
+            </nav>
+
+            <!-- Pulsante Logo Discord Ufficiale Cliccabile con effetto onde -->
+            <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" aria-label="Apri Discord" title="Entra nel server Discord" class="relative overflow-hidden inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-discord-blurple hover:bg-discord-blurpleHover text-white text-xs sm:text-sm font-semibold transition-all active:scale-95 shadow-lg shadow-discord-blurple/40 hover:-translate-y-0.5 group">
+                <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none"></span>
+                <svg class="w-5 h-5 fill-current shrink-0 group-hover:rotate-12 transition-transform" viewBox="0 0 127.14 96.36" aria-hidden="true">
+                    <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+                </svg>
+                <span class="hidden sm:inline">Discord</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10">
+
+        <!-- HERO SECTION -->
+        <section class="pt-14 pb-16 sm:pt-20 sm:pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center">
+            <!-- Badge Stato -->
+            <div class="reveal-item inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-discord-blurple/15 border border-discord-blurple/40 text-discord-blurple text-xs sm:text-sm font-mono mb-6 shadow-[0_0_20px_rgba(88,101,242,0.2)]">
+                <span class="w-2 h-2 rounded-full bg-discord-green animate-ping"></span>
+                <span class="w-2 h-2 rounded-full bg-discord-green -ml-4"></span>
+                <span class="text-cyan-300">SERVER UFFICIALE • DEV, SCRIPTING & MODDING</span>
+            </div>
+
+            <!-- Titolo Principale con effetto neon pulsante -->
+            <h1 class="reveal-item text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight mb-6 leading-tight">
+                Codice, Script & <br class="hidden sm:block" />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-discord-blurple via-cyan-400 to-purple-400 bg-[length:200%_200%] animate-gradient-x neon-title-glow">
+                    Veicoli & Livree Custom
+                </span>
+            </h1>
+
+            <!-- Sottotitolo -->
+            <p class="reveal-item max-w-2xl mx-auto text-base sm:text-lg text-slate-400 mb-10 leading-relaxed">
+                Benvenuto nella community ufficiale dedicata allo sviluppo di <strong class="text-slate-200">Bot Discord</strong>, <strong class="text-slate-200">Scripting avanzato</strong>, <strong class="text-slate-200">Livree personalizzate</strong> e <strong class="text-slate-200">Veicoli 3D</strong>. Leggi attentamente il regolamento per mantenere l'ambiente sicuro e professionale.
+            </p>
+
+            <!-- Pulsanti CTA -->
+            <div class="reveal-item flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#regolamento" class="relative overflow-hidden group w-full sm:w-auto px-7 py-3.5 rounded-xl bg-discord-blurple hover:bg-discord-blurpleHover text-white font-semibold shadow-lg shadow-discord-blurple/40 transition-all flex items-center justify-center gap-2.5 hover:-translate-y-1">
+                    <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none"></span>
+                    <i class="fa-solid fa-scroll group-hover:rotate-12 transition-transform"></i>
+                    <span>Leggi il Regolamento</span>
+                </a>
+                <a href="#verifica" class="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-discord-card/90 hover:bg-discord-cardHover border border-slate-700/80 hover:border-cyan-400/50 text-slate-200 font-semibold transition-all flex items-center justify-center gap-2.5 hover:-translate-y-1 shadow-lg">
+                    <i class="fa-solid fa-shield-check text-discord-green"></i>
+                    <span>Accetta & Entra</span>
+                </a>
+            </div>
+
+            <!-- SEZIONE COMPETENZE / RUOLI DELLO SVILUPPATORE (Con Tilt 3D e Glow Radiale) -->
+            <div id="competenze" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-16 text-left">
+                <!-- Card 1: Bot Developer -->
+                <div class="reveal-item interactive-card p-5 rounded-2xl bg-discord-card/85 backdrop-blur-md border border-slate-800/90 hover:border-discord-blurple/60 group">
+                    <div class="relative z-10">
+                        <div class="w-11 h-11 rounded-xl bg-discord-blurple/15 text-discord-blurple flex items-center justify-center text-xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-transform shadow-inner">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1 group-hover:text-discord-blurple transition-colors">Bot Developer</h3>
+                        <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                            Bot Discord su misura, sistemi ticket, moderazione automatica, economie e integrazioni API.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Scripter -->
+                <div class="reveal-item interactive-card p-5 rounded-2xl bg-discord-card/85 backdrop-blur-md border border-slate-800/90 hover:border-purple-500/60 group" style="transition-delay: 75ms;">
+                    <div class="relative z-10">
+                        <div class="w-11 h-11 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-transform shadow-inner">
+                            <i class="fa-solid fa-code"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1 group-hover:text-purple-400 transition-colors">Scripter</h3>
+                        <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                            Sviluppo script ottimizzati, sistemi custom, meccaniche di gioco e automazioni ad alte prestazioni.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Creatore Livree -->
+                <div class="reveal-item interactive-card p-5 rounded-2xl bg-discord-card/85 backdrop-blur-md border border-slate-800/90 hover:border-cyan-500/60 group" style="transition-delay: 150ms;">
+                    <div class="relative z-10">
+                        <div class="w-11 h-11 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-transform shadow-inner">
+                            <i class="fa-solid fa-spray-can-sparkles"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1 group-hover:text-cyan-400 transition-colors">Creazione Livree</h3>
+                        <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                            Texture in alta definizione, livree per forze dell'ordine, fazioni, team racing e design personalizzati.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Card 4: Creatore Veicoli -->
+                <div class="reveal-item interactive-card p-5 rounded-2xl bg-discord-card/85 backdrop-blur-md border border-slate-800/90 hover:border-amber-500/60 group" style="transition-delay: 225ms;">
+                    <div class="relative z-10">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 group-hover:rotate-6 transition-transform shadow-inner">
+                            <i class="fa-solid fa-car-side"></i>
+                        </div>
+                        <h3 class="text-white font-bold text-base mb-1 group-hover:text-amber-400 transition-colors">Veicoli Custom</h3>
+                        <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                            Modellazione, handling bilanciato, luci ELS/sirene e ottimizzazione poligonale per server fluidi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SEZIONE REGOLAMENTO DISCORD -->
+        <section id="regolamento" class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+            
+            <!-- Intestazione Sezione + Barra Ricerca -->
+            <div class="reveal-item flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 pb-6 border-b border-slate-800">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="text-2xl sm:text-3xl animate-bounce">📜</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                            REGOLE DEL SERVER
+                        </h2>
+                    </div>
+                    <p class="text-slate-400 text-sm sm:text-base">
+                        La permanenza nel server implica l'accettazione automatica di tutte le norme seguenti.
+                    </p>
+                </div>
+
+                <!-- Filtro di ricerca rapido -->
+                <div class="relative w-full md:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+                    <input 
+                        type="text" 
+                        id="ruleSearch" 
+                        placeholder="Cerca una regola..." 
+                        class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-discord-card/90 border border-slate-700/80 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 transition-all shadow-inner"
+                    >
+                </div>
+            </div>
+
+            <!-- Contenitore delle 9 Regole -->
+            <div id="rulesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                <!-- Popolato tramite JS con tilt 3D e scroll reveal -->
+            </div>
+
+            <!-- Messaggio nessun risultato -->
+            <div id="noResults" class="hidden text-center py-12 px-4 rounded-2xl bg-discord-card/50 border border-slate-800">
+                <i class="fa-solid fa-filter-circle-xmark text-3xl text-slate-500 mb-3"></i>
+                <p class="text-slate-300 font-medium">Nessuna regola trovata con questa parola chiave.</p>
+                <button onclick="resetSearch()" class="mt-3 text-sm text-discord-blurple hover:underline">Mostra tutte le regole</button>
+            </div>
+
+            <!-- Box Azione: Accesso Diretto al Server Discord con logo animato e onde -->
+            <div class="reveal-item mt-10 p-6 rounded-2xl bg-gradient-to-r from-discord-card via-[#171d2b] to-discord-card border border-slate-800 hover:border-discord-blurple/50 transition-all flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                <div class="flex items-center gap-4 text-center sm:text-left">
+                    <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" aria-label="Entra su Discord" class="relative w-14 h-14 flex items-center justify-center shrink-0 group">
+                        <span class="absolute inset-0 rounded-2xl bg-discord-blurple/40 animate-ping"></span>
+                        <span class="relative w-14 h-14 rounded-2xl bg-discord-blurple/20 group-hover:bg-discord-blurple text-discord-blurple group-hover:text-white flex items-center justify-center transition-all group-hover:scale-110 animate-float border border-discord-blurple/40">
+                            <svg class="w-7 h-7 fill-current" viewBox="0 0 127.14 96.36" aria-hidden="true">
+                                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+                            </svg>
+                        </span>
+                    </a>
+                    <div>
+                        <h4 class="text-white font-bold text-base">Hai letto tutto il regolamento?</h4>
+                        <p class="text-slate-400 text-xs sm:text-sm">Clicca sul logo Discord per unirti subito alla nostra community di sviluppo e modding.</p>
+                    </div>
+                </div>
+                <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" class="relative overflow-hidden group w-full sm:w-auto shrink-0 px-6 py-3.5 rounded-xl bg-discord-blurple hover:bg-discord-blurpleHover text-white text-sm font-semibold transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-discord-blurple/30 hover:-translate-y-0.5 active:scale-95">
+                    <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none"></span>
+                    <svg class="w-5 h-5 fill-current group-hover:scale-110 transition-transform" viewBox="0 0 127.14 96.36" aria-hidden="true">
+                        <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+                    </svg>
+                    <span>Apri Discord</span>
+                </a>
+            </div>
+
+        </section>
+
+        <!-- SEZIONE VERIFICA & ACCETTAZIONE REGOLAMENTO -->
+        <section id="verifica" class="reveal-item py-12 pb-24 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto">
+            <div class="p-6 sm:p-8 rounded-3xl bg-discord-card/90 backdrop-blur-md border border-slate-800 shadow-2xl relative overflow-hidden">
+                <!-- Barra colorata superiore animata -->
+                <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-discord-blurple via-cyan-400 to-discord-green bg-[length:200%_200%] animate-gradient-x"></div>
+
+                <div class="text-center mb-6">
+                    <span class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-discord-green/15 text-discord-green text-2xl mb-4 animate-float">
+                        <i class="fa-solid fa-user-check"></i>
+                    </span>
+                    <h3 class="text-2xl font-bold text-white mb-2">Conferma Lettura Regolamento</h3>
+                    <p class="text-slate-400 text-sm">
+                        Prima di richiedere supporto per bot, script, livree o veicoli, conferma di aver compreso le regole della community.
+                    </p>
+                </div>
+
+                <!-- Checkbox interattiva -->
+                <label for="acceptRulesCheckbox" class="flex items-start gap-3.5 p-4 rounded-2xl bg-discord-dark/80 border border-slate-800 hover:border-cyan-500/40 cursor-pointer transition-all select-none mb-6">
+                    <input type="checkbox" id="acceptRulesCheckbox" class="mt-1 w-5 h-5 rounded border-slate-600 text-discord-blurple focus:ring-discord-blurple bg-slate-800 cursor-pointer">
+                    <span class="text-sm text-slate-300 leading-relaxed">
+                        Dichiaro di aver letto integralmente tutte le <strong class="text-white">9 regole del server</strong>, di rispettarle e di accettare le decisioni dello staff.
+                    </span>
+                </label>
+
+                <!-- Pulsante Accesso Server -->
+                <div class="flex flex-col items-center">
+                    <button 
+                        id="joinServerBtn" 
+                        disabled
+                        onclick="handleJoinServer()"
+                        class="w-full py-4 px-6 rounded-xl font-bold text-base flex items-center justify-center gap-3 transition-all duration-300 bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50"
+                    >
+                        <i class="fa-solid fa-lock" id="joinBtnIcon"></i>
+                        <span id="joinBtnText">Spunta la casella per sbloccare l'accesso</span>
+                    </button>
+                    <p class="text-xs text-slate-500 mt-3 text-center">
+                        <i class="fa-solid fa-circle-info mr-1"></i> Il mancato rispetto del regolamento comporta warn, mute o ban permanente.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- BANNER CALL-TO-ACTION COMMISSIONI SITO WEB CON BORDO ROTANTE ANIMATO -->
+        <section class="reveal-item pb-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+            <div class="rotating-border-box rounded-3xl p-[2px] shadow-2xl shadow-cyan-500/10">
+                <div class="relative z-10 rounded-[22px] p-7 sm:p-10 bg-gradient-to-br from-[#151a29] via-discord-card to-[#111622] overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6">
+                    <!-- Effetto glow ciano/viola -->
+                    <div class="absolute -right-20 -top-20 w-64 h-64 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-discord-blurple/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="relative z-10 text-center md:text-left max-w-xl">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 text-xs font-mono mb-3">
+                            <i class="fa-solid fa-laptop-code"></i>
+                            <span>WEB DEVELOPMENT & COMMISSIONI</span>
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-2">
+                            Vuoi un sito web su misura come questo?
+                        </h3>
+                        <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                            Realizzo siti web professionali per server Discord, FiveM, community gaming e portfolio personali. Apri un ticket nel server per richiedere il tuo progetto!
+                        </p>
+                    </div>
+
+                    <div class="relative z-10 shrink-0 w-full md:w-auto">
+                        <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" class="relative overflow-hidden group w-full md:w-auto px-7 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-discord-blurple to-purple-500 bg-[length:200%_200%] animate-gradient-x text-white font-bold text-base shadow-lg shadow-cyan-500/30 transition-all duration-300 flex items-center justify-center gap-3 hover:-translate-y-1 active:scale-95">
+                            <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-shimmer pointer-events-none"></span>
+                            <i class="fa-solid fa-wand-magic-sparkles group-hover:rotate-12 transition-transform"></i>
+                            <span>Entra per creare il tuo sito</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800/80 bg-discord-dark/95 py-8 px-4 relative z-10">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-xs sm:text-sm text-slate-500">
+            <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-slate-300 transition-colors">
+                <svg class="w-4 h-4 text-discord-blurple fill-current" viewBox="0 0 127.14 96.36" aria-hidden="true">
+                    <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+                </svg>
+                <span>© <span id="currentYear"></span> <strong class="text-slate-300">Dev & Modding Hub</strong>. Tutti i diritti riservati.</span>
+            </a>
+
+            <!-- Credito Powered by 111braian111 con effetto neon animato -->
+            <div class="px-4 py-1.5 rounded-full bg-slate-900/95 border border-cyan-500/40 shadow-[0_0_15px_rgba(0,245,212,0.15)] flex items-center gap-2 hover:scale-105 transition-transform">
+                <i class="fa-solid fa-bolt text-cyan-400 text-xs animate-pulse"></i>
+                <span class="font-mono text-xs sm:text-sm text-slate-300 tracking-wide">
+                    Powered by <strong class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-discord-blurple to-purple-400 bg-[length:200%_200%] animate-gradient-x font-extrabold">111braian111</strong>
+                </span>
+            </div>
+
+            <div class="flex items-center gap-3 font-mono text-xs">
+                <span class="text-slate-400">Bot Dev</span>
+                <span>•</span>
+                <span class="text-slate-400">Scripter</span>
+                <span>•</span>
+                <span class="text-slate-400">Livree & Veicoli</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODALE INVITO DISCORD -->
+    <div id="inviteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+        <div class="bg-discord-card border border-slate-700 rounded-3xl max-w-md w-full p-6 sm:p-8 text-center shadow-2xl transform scale-95 transition-transform">
+            <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" class="w-16 h-16 rounded-2xl bg-discord-blurple hover:bg-discord-blurpleHover text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-discord-blurple/30 transition-transform hover:scale-105">
+                <svg class="w-9 h-9 fill-current" viewBox="0 0 127.14 96.36" aria-hidden="true">
+                    <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/>
+                </svg>
+            </a>
+            <h3 class="text-2xl font-extrabold text-white mb-2">Benvenuto nel Server!</h3>
+            <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                Grazie per aver accettato il regolamento. Clicca qui sotto per entrare subito su Discord nei canali dedicati a <strong class="text-slate-200">Bot, Script, Livree e Veicoli</strong>.
+            </p>
+            <div class="p-3 rounded-xl bg-discord-dark border border-slate-800 font-mono text-xs text-discord-blurple mb-6 flex items-center justify-between gap-2">
+                <span class="truncate">https://discord.gg/As23z56u33</span>
+                <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" class="shrink-0 px-3 py-1.5 rounded-lg bg-discord-blurple hover:bg-discord-blurpleHover text-white font-sans font-semibold text-xs transition-colors">
+                    Apri Invito
+                </a>
+            </div>
+            <div class="flex gap-3">
+                <a href="https://discord.gg/As23z56u33" target="_blank" rel="noopener noreferrer" class="w-full py-3 rounded-xl bg-discord-green hover:bg-emerald-600 text-white font-semibold text-sm transition-colors flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-discord"></i>
+                    <span>Entra Ora</span>
+                </a>
+                <button onclick="closeModal()" class="px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold text-sm transition-colors">
+                    Chiudi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT PER INTERATTIVITÀ E RICERCA -->
+    <script>
+        // Database esatto delle 9 regole fornite dall'utente
+        const serverRules = [
+            {
+                id: 1,
+                title: "Rispettare tutti i membri",
+                description: "Non usare un linguaggio offensivo, razzista, sessista o denigratorio nei confronti degli altri.",
+                icon: "fa-handshake",
+                accent: "text-blue-400",
+                bgAccent: "bg-blue-500/10",
+                tag: "Rispetto"
+            },
+            {
+                id: 2,
+                title: "No spam o pubblicità",
+                description: "Non è consentito inviare messaggi di spam, link senza autorizzazione o pubblicità per altri server.",
+                icon: "fa-ban",
+                accent: "text-rose-400",
+                bgAccent: "bg-rose-500/10",
+                tag: "Sicurezza"
+            },
+            {
+                id: 3,
+                title: "Usare i canali in modo appropriato",
+                description: "Ogni canale ha uno scopo specifico. Si prega di pubblicare domande, conversazioni o post dove appropriato.",
+                icon: "fa-hashtag",
+                accent: "text-discord-blurple",
+                bgAccent: "bg-discord-blurple/15",
+                tag: "Ordine"
+            },
+            {
+                id: 4,
+                title: "Non condividere contenuti inappropriati",
+                description: "Nessun contenuto violento o che infranga le regole di Discord.\nQuesti sono utilizzati solo dallo staff o per annunci importanti.",
+                icon: "fa-triangle-exclamation",
+                accent: "text-amber-400",
+                bgAccent: "bg-amber-500/10",
+                tag: "ToS Discord"
+            },
+            {
+                id: 5,
+                title: "Non fingere di essere membri dello staff o moderatori",
+                description: "Solo le persone con ruoli ufficiali hanno l'autorità di moderare.",
+                icon: "fa-user-shield",
+                accent: "text-purple-400",
+                bgAccent: "bg-purple-500/10",
+                tag: "Staff"
+            },
+            {
+                id: 6,
+                title: "Seguire le istruzioni dello staff",
+                description: "Ogni decisione presa dallo staff è volta a mantenere il server sicuro e amichevole.",
+                icon: "fa-gavel",
+                accent: "text-indigo-400",
+                bgAccent: "bg-indigo-500/10",
+                tag: "Moderazione"
+            },
+            {
+                id: 7,
+                title: "Non condividere informazioni personali",
+                description: "Per la tua protezione e quella degli altri, non condividere numeri di telefono, indirizzi o informazioni personali.",
+                icon: "fa-user-lock",
+                accent: "text-cyan-400",
+                bgAccent: "bg-cyan-500/10",
+                tag: "Privacy"
+            },
+            {
+                id: 8,
+                title: "Un account per persona",
+                description: "Non utilizzare più account per evitare sanzioni o per barare.",
+                icon: "fa-users-slash",
+                accent: "text-orange-400",
+                bgAccent: "bg-orange-500/10",
+                tag: "Fair Play"
+            },
+            {
+                id: 9,
+                title: "Divertiti e crea una community positiva!",
+                description: "L'obiettivo del server è creare un ambiente piacevole per tutti.",
+                icon: "fa-heart",
+                accent: "text-emerald-400",
+                bgAccent: "bg-emerald-500/10",
+                tag: "Community",
+                fullWidth: true
+            }
+        ];
+
+        // Elementi DOM
+        const rulesContainer = document.getElementById('rulesContainer');
+        const ruleSearch = document.getElementById('ruleSearch');
+        const noResults = document.getElementById('noResults');
+        const acceptCheckbox = document.getElementById('acceptRulesCheckbox');
+        const joinServerBtn = document.getElementById('joinServerBtn');
+        const joinBtnIcon = document.getElementById('joinBtnIcon');
+        const joinBtnText = document.getElementById('joinBtnText');
+
+        // Renderizza le regole nel DOM
+        function renderRules(filterText = '') {
+            rulesContainer.innerHTML = '';
+            const query = filterText.toLowerCase().trim();
+
+            const filtered = serverRules.filter(rule => 
+                rule.title.toLowerCase().includes(query) || 
+                rule.description.toLowerCase().includes(query) ||
+                rule.tag.toLowerCase().includes(query) ||
+                rule.id.toString() === query
+            );
+
+            if (filtered.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            filtered.forEach((rule, index) => {
+                // Gestione a capo per la regola 4
+                const formattedDesc = rule.description.replace(/\n/g, '<br><span class="inline-block mt-1.5 text-slate-400/90 italic text-xs sm:text-sm">');
+                const descClosing = rule.description.includes('\n') ? '</span>' : '';
+
+                const card = document.createElement('article');
+                card.className = `reveal-item interactive-card ${rule.fullWidth && filtered.length === serverRules.length ? 'md:col-span-2' : ''} p-5 sm:p-6 rounded-2xl bg-discord-card/90 backdrop-blur-md hover:bg-discord-cardHover border border-slate-800/90 hover:border-cyan-400/50 flex flex-col justify-between group overflow-hidden`;
+                card.style.transitionDelay = `${(index % 4) * 60}ms`;
+                
+                card.innerHTML = `
+                    <div class="relative z-10">
+                        <div class="flex items-center justify-between gap-3 mb-3.5">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 rounded-lg ${rule.bgAccent} ${rule.accent} font-mono font-bold text-sm flex items-center justify-center border border-white/10 group-hover:scale-110 transition-transform">
+                                    0${rule.id}
+                                </span>
+                                <span class="text-[11px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-slate-800/90 text-slate-400 border border-slate-700/60">
+                                    ${rule.tag}
+                                </span>
+                            </div>
+                            <i class="fa-solid ${rule.icon} ${rule.accent} opacity-75 group-hover:opacity-100 group-hover:scale-125 group-hover:rotate-6 transition-all text-lg"></i>
+                        </div>
+                        
+                        <h3 class="text-white font-bold text-base sm:text-lg mb-2 group-hover:text-cyan-300 transition-colors">
+                            ${rule.title}
+                        </h3>
+                        
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            ${formattedDesc}${descClosing}
+                        </p>
+                    </div>
+                `;
+                rulesContainer.appendChild(card);
+            });
+
+            // Riattiva tilt 3D e scroll reveal sulle nuove card renderizzate
+            initInteractiveCards();
+            initScrollReveal();
+        }
+
+        // Ricerca in tempo reale
+        ruleSearch.addEventListener('input', (e) => {
+            renderRules(e.target.value);
+        });
+
+        function resetSearch() {
+            ruleSearch.value = '';
+            renderRules('');
+        }
+
+        // Effetto esplosione particelle neon quando si spunta la checkbox
+        function triggerNeonBurst(element) {
+            const rect = element.getBoundingClientRect();
+            const originX = rect.left + rect.width / 2;
+            const originY = rect.top + rect.height / 2;
+            const colors = ['#5865F2', '#00f5d4', '#a855f7', '#23A559', '#38bdf8'];
+
+            for (let i = 0; i < 36; i++) {
+                const particle = document.createElement('div');
+                const size = Math.random() * 7 + 4;
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 140 + 50;
+                const tx = Math.cos(angle) * velocity;
+                const ty = Math.sin(angle) * velocity - 30;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+
+                particle.style.position = 'fixed';
+                particle.style.left = `${originX}px`;
+                particle.style.top = `${originY}px`;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.backgroundColor = color;
+                particle.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+                particle.style.boxShadow = `0 0 10px ${color}`;
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '9999';
+                particle.style.transition = 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s ease-out';
+
+                document.body.appendChild(particle);
+
+                requestAnimationFrame(() => {
+                    particle.style.transform = `translate(${tx}px, ${ty}px) rotate(${Math.random() * 360}deg) scale(0.2)`;
+                    particle.style.opacity = '0';
+                });
+
+                setTimeout(() => particle.remove(), 800);
+            }
+        }
+
+        // Gestione checkbox accettazione regolamento
+        acceptCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                joinServerBtn.disabled = false;
+                joinServerBtn.className = "relative overflow-hidden group w-full py-4 px-6 rounded-xl font-bold text-base flex items-center justify-center gap-3 transition-all duration-300 bg-gradient-to-r from-discord-green via-emerald-500 to-cyan-500 bg-[length:200%_200%] animate-gradient-x text-white cursor-pointer shadow-lg shadow-discord-green/35 hover:-translate-y-0.5";
+                joinBtnIcon.className = "fa-brands fa-discord text-xl animate-bounce";
+                joinBtnText.innerText = "Entra nel Server Discord";
+                triggerNeonBurst(joinServerBtn);
+            } else {
+                joinServerBtn.disabled = true;
+                joinServerBtn.className = "w-full py-4 px-6 rounded-xl font-bold text-base flex items-center justify-center gap-3 transition-all duration-300 bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700/50";
+                joinBtnIcon.className = "fa-solid fa-lock";
+                joinBtnText.innerText = "Spunta la casella per sbloccare l'accesso";
+            }
+        });
+
+        // Apertura diretta del link Discord e modale di conferma
+        function handleJoinServer() {
+            window.open('https://discord.gg/As23z56u33', '_blank', 'noopener,noreferrer');
+            const modal = document.getElementById('inviteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('inviteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Tilt 3D e bagliore radiale al passaggio del cursore sulle card
+        function initInteractiveCards() {
+            const cards = document.querySelectorAll('.interactive-card');
+            cards.forEach(card => {
+                if (card.dataset.tiltBound) return;
+                card.dataset.tiltBound = 'true';
+
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = ((y - centerY) / centerY) * -4.5;
+                    const rotateY = ((x - centerX) / centerX) * 4.5;
+
+                    card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+                });
+            });
+        }
+
+        // Animazioni di comparsa allo scroll (Intersection Observer)
+        function initScrollReveal() {
+            const items = document.querySelectorAll('.reveal-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            items.forEach(item => observer.observe(item));
+        }
+
+        // Barra di progresso lettura sincronizzata con lo scroll
+        function updateScrollProgress() {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            const bar = document.getElementById('scrollProgressBar');
+            if (bar) bar.style.width = `${progress}%`;
+        }
+        window.addEventListener('scroll', updateScrollProgress, { passive: true });
+
+        // Sfondo Canvas HTML5 animato con particelle interattive
+        function initCyberCanvas() {
+            const canvas = document.getElementById('cyberCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height, particles = [];
+            const mouse = { x: null, y: null, radius: 140 };
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+                const count = Math.min(Math.floor((width * height) / 18000), 75);
+                particles = [];
+                const palette = ['#5865F2', '#00f5d4', '#a855f7'];
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 0.7,
+                        vy: (Math.random() - 0.5) * 0.7,
+                        size: Math.random() * 2.2 + 1,
+                        color: palette[i % palette.length]
+                    });
+                }
+            }
+
+            window.addEventListener('resize', resize);
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            }, { passive: true });
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                    // Reazione al cursore
+                    if (mouse.x !== null && mouse.y !== null) {
+                        const dx = mouse.x - p.x;
+                        const dy = mouse.y - p.y;
+                        const dist = Math.hypot(dx, dy);
+                        if (dist < mouse.radius) {
+                            p.x -= (dx / dist) * 1.2;
+                            p.y -= (dy / dist) * 1.2;
+                        }
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+
+                    // Linee energetiche tra particelle vicine
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const p2 = particles[j];
+                        const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.strokeStyle = `rgba(88, 101, 242, ${(1 - dist / 120) * 0.25})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
+
+            resize();
+            animate();
+        }
+
+        // Inizializzazione al caricamento pagina
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentYear').innerText = new Date().getFullYear();
+            renderRules();
+            initInteractiveCards();
+            initScrollReveal();
+            initCyberCanvas();
+            updateScrollProgress();
+        });
+    </script>
+</body>
+</html>
